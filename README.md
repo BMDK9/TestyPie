@@ -42,7 +42,8 @@
 https://teamsparta.notion.site/TestyPie-18f9ac07c30f420994e9f9c7d640df57
 
 # API
-Swagger : https://testypie.link/swagger-ui/index.html
+Swagger
+
 
 # Directory
 ```bash
