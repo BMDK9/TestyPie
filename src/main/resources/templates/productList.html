@@ -57,7 +57,7 @@
         <div>
             <ul class="pagination">
                 <li th:each="pageNum : ${#numbers.sequence(1, productList.totalPages)}" class="page-item">
-                    <a th:href="@{/api/category/{parentCategoryName}/{childCategoryId}(parentCategoryName=${parentCategoryName}, childcategoryID=${childCategoryId}, page=${pageNum})}" th:text="${pageNum}" class="page-link">1</a>
+                    <a th:href="@{/api/category/{parentCategoryName}/{childCategoryId}(parentCategoryName=${parentCategoryName}, childCategoryId=${childCategoryId}, page=${pageNum})}" th:text="${pageNum}" class="page-link"></a>
                 </li>
             </ul>
         </div>

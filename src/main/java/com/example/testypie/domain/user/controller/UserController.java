@@ -44,7 +44,7 @@ public class UserController {
       @RequestBody @Valid SignUpRequestDTO req, BindingResult bindingResult) {
 
     if (bindingResult.hasErrors()) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.SIGNUP_DUPLICATED_USER_ACCOUNT);
+      throw new GlobalExceptionHandler.CustomException(ErrorCode.INVALID_INPUT_VALUE);
     }
 
     userService.signup(req);
