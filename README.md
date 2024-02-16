@@ -45,7 +45,10 @@ https://teamsparta.notion.site/TestyPie-18f9ac07c30f420994e9f9c7d640df57
 https://www.notion.so/TestyPie-e08515313b1945259255dd827b825bc9
 
 # API
-Swagger
+![testyPieSwagger1(new)](https://github.com/BMDK9/TestyPie/assets/144665614/0cec090f-090e-428a-b232-d704b19b5240)
+![testyPieSwagger2](https://github.com/BMDK9/TestyPie/assets/144665614/d1dd1f99-5118-447b-87d0-2891abc3b362)
+![testyPieSwagger3](https://github.com/BMDK9/TestyPie/assets/144665614/475db819-71aa-427f-84db-462e747dc33f)
+
 
 
 # Directory
