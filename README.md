@@ -41,8 +41,8 @@
 ## 팀 노션 페이지(ERD)
 https://teamsparta.notion.site/TestyPie-18f9ac07c30f420994e9f9c7d640df57
 
-## 서비스 브로셔
-https://www.notion.so/TestyPie-e08515313b1945259255dd827b825bc9
+## 기술 노트
+https://github.com/BMDK9/TestyPie/wiki
 
 ## API
 ![testyPieSwagger1(new)](https://github.com/BMDK9/TestyPie/assets/144665614/0cec090f-090e-428a-b232-d704b19b5240)
