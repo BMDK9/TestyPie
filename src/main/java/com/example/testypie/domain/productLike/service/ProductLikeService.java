@@ -59,10 +59,14 @@ public class ProductLikeService {
 
     Product product = productService.checkProduct(productId);
     ProductLike productLike = getProductLikeOrElseCreateProductLike(user, product);
-    ProductAndLike result = new ProductAndLike(product, productLike);
 
-    return result;
+    return ProductAndLike.of(product, productLike);
   }
 
-  private record ProductAndLike(Product product, ProductLike productLike) {}
+  private record ProductAndLike(Product product, ProductLike productLike) {
+
+    private static ProductAndLike of(Product product, ProductLike productLike) {
+      return new ProductAndLike(product, productLike);
+    }
+  }
 }
