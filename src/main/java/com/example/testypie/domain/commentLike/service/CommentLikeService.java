@@ -60,10 +60,14 @@ public class CommentLikeService {
 
     Comment comment = commentService.checkComment(commentId);
     CommentLike commentLike = getCommentLikeOrElseCreateCommentLike(user, comment);
-    CommentAndLike result = new CommentAndLike(comment, commentLike);
 
-    return result;
+    return CommentAndLike.of(comment, commentLike);
   }
 
-  private record CommentAndLike(Comment comment, CommentLike commentLike) {}
+  private record CommentAndLike(Comment comment, CommentLike commentLike) {
+
+    private static CommentAndLike of (Comment comment, CommentLike commentLike) {
+      return new CommentAndLike(comment, commentLike);
+    }
+  }
 }
