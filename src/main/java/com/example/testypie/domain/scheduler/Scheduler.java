@@ -40,7 +40,7 @@ public class Scheduler {
   }
 
   @Transactional
-  @Scheduled(cron = "0 0 0 * * *")
+  @Scheduled(cron = "0 0 3 * * *")
   public void productLikeAutoDelete() {
 
     List<ProductLike> productLikes = productLikeRepository.findAll();
@@ -53,7 +53,7 @@ public class Scheduler {
   }
 
   @Transactional
-  @Scheduled(cron = "0 0 0 * * *")
+  @Scheduled(cron = "0 0 3 * * *")
   public void commentLikeAutoDelete() {
 
     List<CommentLike> commentLikes = commentLikeRepository.findAll();
