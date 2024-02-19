@@ -41,7 +41,7 @@
 ## 팀 노션 페이지(ERD)
 https://teamsparta.notion.site/TestyPie-18f9ac07c30f420994e9f9c7d640df57
 
-## 기술 노트
+## 기술 노트(Github Wiki)
 https://github.com/BMDK9/TestyPie/wiki
 
 ## API
