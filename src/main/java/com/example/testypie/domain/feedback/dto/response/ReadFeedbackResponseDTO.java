@@ -6,25 +6,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record ReadFeedbackResponseDTO(
-    Long id,
-    LocalDateTime createdAt,
-    List<ReadFeedbackDetailsResponseDTO> feedbackDetailsList,
-    Long userId,
-    Long productId,
-    Double rating) {
-  public static ReadFeedbackResponseDTO of(Feedback feedback) {
+        Long id,
+        LocalDateTime createdAt,
+        List<ReadFeedbackDetailsResponseDTO> feedbackDetailsList,
+        Long userId,
+        Long productId,
+        Double rating) {
+    public static ReadFeedbackResponseDTO of(Feedback feedback) {
 
-    List<ReadFeedbackDetailsResponseDTO> detailsDTO =
-        feedback.getFeedbackDetailsList().stream()
-            .map(ReadFeedbackDetailsResponseDTO::of)
-            .collect(Collectors.toList());
+        List<ReadFeedbackDetailsResponseDTO> detailsDTO =
+                feedback.getFeedbackDetailsList().stream()
+                        .map(ReadFeedbackDetailsResponseDTO::of)
+                        .collect(Collectors.toList());
 
-    return new ReadFeedbackResponseDTO(
-        feedback.getId(),
-        feedback.getCreatedAt(),
-        detailsDTO,
-        feedback.getUser().getId(),
-        feedback.getProduct().getId(),
-        feedback.getRating());
-  }
+        return new ReadFeedbackResponseDTO(
+                feedback.getId(),
+                feedback.getCreatedAt(),
+                detailsDTO,
+                feedback.getUser().getId(),
+                feedback.getProduct().getId(),
+                feedback.getRating());
+    }
 }

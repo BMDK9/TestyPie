@@ -10,63 +10,63 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class CustomMultipartFile implements MultipartFile {
 
-  private final String name;
+    private final String name;
 
-  private String originalFilename;
+    private String originalFilename;
 
-  private String contentType;
+    private String contentType;
 
-  private final byte[] content;
-  boolean isEmpty;
+    private final byte[] content;
+    boolean isEmpty;
 
-  public CustomMultipartFile(
-      String name, String originalFilename, String contentType, byte[] content) {
+    public CustomMultipartFile(
+            String name, String originalFilename, String contentType, byte[] content) {
 
-    Assert.hasLength(name, "Name must not be null");
-    this.name = name;
-    this.originalFilename = (originalFilename != null ? originalFilename : "");
-    this.contentType = contentType;
-    this.content = (content != null ? content : new byte[0]);
-    this.isEmpty = false;
-  }
+        Assert.hasLength(name, "Name must not be null");
+        this.name = name;
+        this.originalFilename = (originalFilename != null ? originalFilename : "");
+        this.contentType = contentType;
+        this.content = (content != null ? content : new byte[0]);
+        this.isEmpty = false;
+    }
 
-  @Override
-  public String getName() {
-    return this.name;
-  }
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
-  @Override
-  public String getOriginalFilename() {
-    return this.originalFilename;
-  }
+    @Override
+    public String getOriginalFilename() {
+        return this.originalFilename;
+    }
 
-  @Override
-  public String getContentType() {
-    return this.contentType;
-  }
+    @Override
+    public String getContentType() {
+        return this.contentType;
+    }
 
-  @Override
-  public boolean isEmpty() {
-    return (this.content.length == 0);
-  }
+    @Override
+    public boolean isEmpty() {
+        return (this.content.length == 0);
+    }
 
-  @Override
-  public long getSize() {
-    return this.content.length;
-  }
+    @Override
+    public long getSize() {
+        return this.content.length;
+    }
 
-  @Override
-  public byte[] getBytes() throws IOException {
-    return this.content;
-  }
+    @Override
+    public byte[] getBytes() throws IOException {
+        return this.content;
+    }
 
-  @Override
-  public InputStream getInputStream() throws IOException {
-    return new ByteArrayInputStream(this.content);
-  }
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteArrayInputStream(this.content);
+    }
 
-  @Override
-  public void transferTo(File dest) throws IOException, IllegalStateException {
-    FileCopyUtils.copy(this.content, dest);
-  }
+    @Override
+    public void transferTo(File dest) throws IOException, IllegalStateException {
+        FileCopyUtils.copy(this.content, dest);
+    }
 }

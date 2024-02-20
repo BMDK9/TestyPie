@@ -25,44 +25,44 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-  private final JwtUtil jwtUtil;
-  private final UserDetailsServiceImpl userDetailsServiceImpl;
-  private final ObjectMapper objectMapper;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final ObjectMapper objectMapper;
 
-  @Override
-  protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    // request에서 tokenValue 추출
-    String token = jwtUtil.resolveToken(request);
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        // request에서 tokenValue 추출
+        String token = jwtUtil.resolveToken(request);
 
-    // 토큰이 존재하면 검증
-    if (Objects.nonNull(token)) {
-      // 토큰 검증
-      if (jwtUtil.validateToken(token)) {
-        // 토큰에서 사용자 정보 가져오기
-        Claims info = jwtUtil.getUserInfoFromToken(token);
+        // 토큰이 존재하면 검증
+        if (Objects.nonNull(token)) {
+            // 토큰 검증
+            if (jwtUtil.validateToken(token)) {
+                // 토큰에서 사용자 정보 가져오기
+                Claims info = jwtUtil.getUserInfoFromToken(token);
 
-        String username = info.getSubject();
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
+                String username = info.getSubject();
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        UserDetailsImpl userDetails = userDetailsServiceImpl.getUserDetails(username);
-        Authentication authentication =
-            new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
+                UserDetailsImpl userDetails = userDetailsServiceImpl.getUserDetails(username);
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
 
-      } else {
-        // 인증정보가 존재하지 않을때
-        ResponseMessageDTO responseMessageDTO =
-            new ResponseMessageDTO("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json; charset=UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(responseMessageDTO));
-        return;
-      }
+            } else {
+                // 인증정보가 존재하지 않을때
+                ResponseMessageDTO responseMessageDTO =
+                        new ResponseMessageDTO("토큰이 유효하지 않습니다.", HttpStatus.BAD_REQUEST.value());
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write(objectMapper.writeValueAsString(responseMessageDTO));
+                return;
+            }
+        }
+        filterChain.doFilter(request, response);
     }
-    filterChain.doFilter(request, response);
-  }
 }

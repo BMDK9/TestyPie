@@ -22,24 +22,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController {
 
-  private final CategoryService categoryService;
-  private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
-  // Category 생성(관리자 권한 추가 예정 / UserRole == Admin)
-  @PostMapping
-  public ResponseEntity<CreateCategoryResponseDTO> createCategory(
-      @Valid @RequestBody CreateCategoryRequestDTO req) {
+    // Category 생성(관리자 권한 추가 예정 / UserRole == Admin)
+    @PostMapping
+    public ResponseEntity<CreateCategoryResponseDTO> createCategory(
+            @Valid @RequestBody CreateCategoryRequestDTO req) {
 
-    CreateCategoryResponseDTO res = categoryService.createCategory(req);
+        CreateCategoryResponseDTO res = categoryService.createCategory(req);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(res);
-  }
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
 
-  @GetMapping
-  public List<ReadCategoryResponseDTO> getCategoryList() {
+    @GetMapping
+    public List<ReadCategoryResponseDTO> getCategoryList() {
 
-    return categoryRepository.findAll().stream()
-        .map(ReadCategoryResponseDTO::of)
-        .collect(Collectors.toList());
-  }
+        return categoryRepository.findAll().stream()
+                .map(ReadCategoryResponseDTO::of)
+                .collect(Collectors.toList());
+    }
 }

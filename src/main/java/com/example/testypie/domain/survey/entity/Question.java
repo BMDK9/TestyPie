@@ -12,29 +12,29 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Question {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String text;
+    private String text;
 
-  @Enumerated(EnumType.STRING)
-  private QuestionType questionType;
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
 
-  @JoinColumn
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Option> optionList = new ArrayList<>();
+    @JoinColumn
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Option> optionList = new ArrayList<>();
 
-  @JoinColumn
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Survey survey;
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Survey survey;
 
-  @Builder
-  private Question(Long id, String text, QuestionType questionType, Survey survey) {
-    this.id = id;
-    this.text = text;
-    this.questionType = questionType;
-    this.optionList = new ArrayList<>();
-    this.survey = survey;
-  }
+    @Builder
+    private Question(Long id, String text, QuestionType questionType, Survey survey) {
+        this.id = id;
+        this.text = text;
+        this.questionType = questionType;
+        this.optionList = new ArrayList<>();
+        this.survey = survey;
+    }
 }

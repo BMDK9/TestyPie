@@ -19,28 +19,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BugReport extends TimeStamp {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column private String content;
+    @Column private String content;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id", nullable = false)
-  private Product product;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-  @ManyToOne
-  @JoinColumn(name = "userId", nullable = false)
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
 
-  @Column private String fileUrl;
+    @Column private String fileUrl;
 
-  @Builder
-  private BugReport(Long id, String content, Product product, User user, String fileUrl) {
-    this.id = id;
-    this.content = content;
-    this.product = product;
-    this.user = user;
-    this.fileUrl = fileUrl;
-  }
+    @Builder
+    private BugReport(Long id, String content, Product product, User user, String fileUrl) {
+        this.id = id;
+        this.content = content;
+        this.product = product;
+        this.user = user;
+        this.fileUrl = fileUrl;
+    }
 }

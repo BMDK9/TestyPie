@@ -11,32 +11,32 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class Reward {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column private String rewardItem;
+    @Column private String rewardItem;
 
-  @Column private Long itemSize;
+    @Column private Long itemSize;
 
-  @JoinColumn
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  private Product product;
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Product product;
 
-  @JoinColumn
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-  @Column String fileUrl;
+    @Column String fileUrl;
 
-  @Builder
-  private Reward(
-      Long id, String reward_item, Long item_size, User user, Product product, String fileUrl) {
-    this.id = id;
-    this.rewardItem = reward_item;
-    this.itemSize = item_size;
-    this.user = user;
-    this.product = product;
-    this.fileUrl = fileUrl;
-  }
+    @Builder
+    private Reward(
+            Long id, String reward_item, Long item_size, User user, Product product, String fileUrl) {
+        this.id = id;
+        this.rewardItem = reward_item;
+        this.itemSize = item_size;
+        this.user = user;
+        this.product = product;
+        this.fileUrl = fileUrl;
+    }
 }

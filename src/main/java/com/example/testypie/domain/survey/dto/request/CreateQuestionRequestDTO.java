@@ -5,6 +5,6 @@ import java.util.List;
 import lombok.NonNull;
 
 public record CreateQuestionRequestDTO(
-    @NonNull String text,
-    @NonNull QuestionType questionType,
-    List<CreateOptionRequestDTO> optionList) {}
+        @NonNull String text,
+        @NonNull QuestionType questionType,
+        List<CreateOptionRequestDTO> optionList) {}

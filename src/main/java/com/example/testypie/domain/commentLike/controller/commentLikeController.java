@@ -15,36 +15,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(
-    "/api/category/{parentCategoryName}/{childCategoryId}/products/{productId}/comments")
+        "/api/category/{parentCategoryName}/{childCategoryId}/products/{productId}/comments")
 public class commentLikeController {
 
-  private final CommentLikeService commentLikeService;
+    private final CommentLikeService commentLikeService;
 
-  @PatchMapping("/{comment_id}/comment_like")
-  public ResponseEntity<CommentLikeResponseDto> clickCommentLike(
-      @PathVariable String parentCategoryName,
-      @PathVariable Long childCategoryId,
-      @PathVariable Long productId,
-      @PathVariable Long comment_id,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PatchMapping("/{comment_id}/comment_like")
+    public ResponseEntity<CommentLikeResponseDto> clickCommentLike(
+            @PathVariable String parentCategoryName,
+            @PathVariable Long childCategoryId,
+            @PathVariable Long productId,
+            @PathVariable Long comment_id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    CommentLikeResponseDto res =
-        commentLikeService.clickCommentLike(comment_id, userDetails.getUser());
+        CommentLikeResponseDto res =
+                commentLikeService.clickCommentLike(comment_id, userDetails.getUser());
 
-    return ResponseEntity.ok().body(res);
-  }
+        return ResponseEntity.ok().body(res);
+    }
 
-  @GetMapping("/{comment_id}/comment_like/status")
-  public ResponseEntity<CommentLikeResponseDto> getCommentLike(
-      @PathVariable String parentCategoryName,
-      @PathVariable Long childCategoryId,
-      @PathVariable Long productId,
-      @PathVariable Long comment_id,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @GetMapping("/{comment_id}/comment_like/status")
+    public ResponseEntity<CommentLikeResponseDto> getCommentLike(
+            @PathVariable String parentCategoryName,
+            @PathVariable Long childCategoryId,
+            @PathVariable Long productId,
+            @PathVariable Long comment_id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    CommentLikeResponseDto res =
-        commentLikeService.getCommentLike(comment_id, userDetails.getUser());
+        CommentLikeResponseDto res =
+                commentLikeService.getCommentLike(comment_id, userDetails.getUser());
 
-    return ResponseEntity.ok().body(res);
-  }
+        return ResponseEntity.ok().body(res);
+    }
 }

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-  Page<Comment> findAllByProduct(Product product, Pageable pageable);
+    Page<Comment> findAllByProduct(Product product, Pageable pageable);
 
-  Optional<Comment> findByProduct(Product product);
+    Optional<Comment> findByProduct(Product product);
 
-  Optional<Comment> findByUser(User user);
+    Optional<Comment> findByUser(User user);
 }

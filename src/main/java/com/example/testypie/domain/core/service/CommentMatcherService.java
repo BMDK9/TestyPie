@@ -22,65 +22,65 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentMatcherService {
 
-  private final CommentService commentService;
-  private final ProductService productService;
-  private final CategoryService categoryService;
+    private final CommentService commentService;
+    private final ProductService productService;
+    private final CategoryService categoryService;
 
-  public CreateCommentResponseDTO productComment(
-      Long productId,
-      CreateCommentRequestDTO req,
-      User user,
-      Long childCategoryId,
-      String parentCategoryName) {
+    public CreateCommentResponseDTO productComment(
+            Long productId,
+            CreateCommentRequestDTO req,
+            User user,
+            Long childCategoryId,
+            String parentCategoryName) {
 
-    CategoryAndProduct result =
-        CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
+        CategoryAndProduct result =
+                CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
 
-    return commentService.createComment(result.category(), result.product(), user, req);
-  }
+        return commentService.createComment(result.category(), result.product(), user, req);
+    }
 
-  public Page<ReadPageCommentResponseDTO> getCommentPage(
-      Pageable pageable, Long productId, Long childCategoryId, String parentCategoryName) {
+    public Page<ReadPageCommentResponseDTO> getCommentPage(
+            Pageable pageable, Long productId, Long childCategoryId, String parentCategoryName) {
 
-    CategoryAndProduct result =
-        CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
+        CategoryAndProduct result =
+                CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
 
-    return commentService.getCommentPage(pageable, result.category, result.product);
-  }
+        return commentService.getCommentPage(pageable, result.category, result.product);
+    }
 
-  @Transactional
-  public UpdateCommentResponseDTO updateComment(
-      Long productId,
-      Long comment_id,
-      UpdateCommentRequestDTO req,
-      User user,
-      Long childCategoryId,
-      String parentCategoryName) {
+    @Transactional
+    public UpdateCommentResponseDTO updateComment(
+            Long productId,
+            Long comment_id,
+            UpdateCommentRequestDTO req,
+            User user,
+            Long childCategoryId,
+            String parentCategoryName) {
 
-    CategoryAndProduct result =
-        CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
+        CategoryAndProduct result =
+                CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
 
-    return commentService.updateComment(result.category, result.product, user, comment_id, req);
-  }
+        return commentService.updateComment(result.category, result.product, user, comment_id, req);
+    }
 
-  public void deleteComment(
-      Long productId, Long comment_id, User user, Long childCategoryId, String parentCategoryName) {
+    public void deleteComment(
+            Long productId, Long comment_id, User user, Long childCategoryId, String parentCategoryName) {
 
-    CategoryAndProduct result =
-        CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
+        CategoryAndProduct result =
+                CheckCategoryAndProduct(productId, childCategoryId, parentCategoryName);
 
-    commentService.deleteComment(result.category, result.product, user, comment_id);
-  }
+        commentService.deleteComment(result.category, result.product, user, comment_id);
+    }
 
-  private CategoryAndProduct CheckCategoryAndProduct(
-      Long productId, Long childCategoryId, String parentCategoryName) {
+    private CategoryAndProduct CheckCategoryAndProduct(
+            Long productId, Long childCategoryId, String parentCategoryName) {
 
-    Category category = categoryService.checkCategory(childCategoryId, parentCategoryName);
-    Product product = productService.checkProduct(productId);
-    CategoryAndProduct result = new CategoryAndProduct(category, product);
+        Category category = categoryService.checkCategory(childCategoryId, parentCategoryName);
+        Product product = productService.checkProduct(productId);
+        CategoryAndProduct result = new CategoryAndProduct(category, product);
 
-    return result;
-  }
+        return result;
+    }
 
-  private record CategoryAndProduct(Category category, Product product) {}
+    private record CategoryAndProduct(Category category, Product product) {}
 }

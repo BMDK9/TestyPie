@@ -28,52 +28,52 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class BugReportController {
 
-  private final BugReportService bugReportService;
+    private final BugReportService bugReportService;
 
-  @PostMapping(
-      value = "/reports",
-      consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<CreateBugReportResponseDTO> createBugReport(
-      @PathVariable Long productId,
-      @RequestPart(value = "req", required = false) CreateBugReportRequestDTO req,
-      @RequestPart(value = "file", required = false) @Nullable MultipartFile multipartFile,
-      @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @PostMapping(
+            value = "/reports",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<CreateBugReportResponseDTO> createBugReport(
+            @PathVariable Long productId,
+            @RequestPart(value = "req", required = false) CreateBugReportRequestDTO req,
+            @RequestPart(value = "file", required = false) @Nullable MultipartFile multipartFile,
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    CreateBugReportResponseDTO res =
-        bugReportService.createBugReport(productId, req, userDetails.getUser(), multipartFile);
-    return ResponseEntity.ok().body(res);
-  }
+        CreateBugReportResponseDTO res =
+                bugReportService.createBugReport(productId, req, userDetails.getUser(), multipartFile);
+        return ResponseEntity.ok().body(res);
+    }
 
-  @GetMapping("/reports/{bugReport_id}")
-  public ModelAndView getProductBugReport(
-      @PathVariable Long bugReport_id,
-      @PathVariable Long productId,
-      @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @GetMapping("/reports/{bugReport_id}")
+    public ModelAndView getProductBugReport(
+            @PathVariable Long bugReport_id,
+            @PathVariable Long productId,
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    ReadBugReportResponseDTO res =
-        bugReportService.getBugReport(bugReport_id, productId, userDetails.getUser());
+        ReadBugReportResponseDTO res =
+                bugReportService.getBugReport(bugReport_id, productId, userDetails.getUser());
 
-    ModelAndView modelAndView = new ModelAndView();
-    modelAndView.setViewName("bugReport");
-    modelAndView.addObject("bugReport", res);
-    return modelAndView;
-  }
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("bugReport");
+        modelAndView.addObject("bugReport", res);
+        return modelAndView;
+    }
 
-  @GetMapping("/reports")
-  public ResponseEntity<Page<ReadPageBugReportResponseDTO>> getBugReportPage(
-      @PathVariable Long productId,
-      @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
-      Pageable pageable,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @GetMapping("/reports")
+    public ResponseEntity<Page<ReadPageBugReportResponseDTO>> getBugReportPage(
+            @PathVariable Long productId,
+            @AuthenticationPrincipal @NotNull UserDetailsImpl userDetails,
+            Pageable pageable,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    Page<ReadPageBugReportResponseDTO> res =
-        bugReportService.getBugReportPage(pageable, productId, userDetails.getUser());
+        Page<ReadPageBugReportResponseDTO> res =
+                bugReportService.getBugReportPage(pageable, productId, userDetails.getUser());
 
-    return ResponseEntity.ok().body(res);
-  }
+        return ResponseEntity.ok().body(res);
+    }
 }

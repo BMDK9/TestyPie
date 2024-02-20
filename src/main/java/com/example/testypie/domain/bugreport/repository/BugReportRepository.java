@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BugReportRepository extends JpaRepository<BugReport, Long> {
 
-  Page<BugReport> findAllByProductId(Long productId, Pageable pageable);
+    Page<BugReport> findAllByProductId(Long productId, Pageable pageable);
 
-  Optional<BugReport> findByProductIdAndId(Long productId, Long bugReportId);
+    Optional<BugReport> findByProductIdAndId(Long productId, Long bugReportId);
 }

@@ -31,67 +31,67 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class BugReportService {
 
-  private final BugReportRepository bugReportRepository;
-  private final ProductService productService;
-  private final S3Util s3Util;
+    private final BugReportRepository bugReportRepository;
+    private final ProductService productService;
+    private final S3Util s3Util;
 
-  public CreateBugReportResponseDTO createBugReport(
-      Long productId, CreateBugReportRequestDTO req, User user, MultipartFile multipartFile) {
+    public CreateBugReportResponseDTO createBugReport(
+            Long productId, CreateBugReportRequestDTO req, User user, MultipartFile multipartFile) {
 
-    Product product = productService.checkProduct(productId);
-    String fileUrl = s3Util.uploadFile(multipartFile, FilePath.BUGREPORT);
-    BugReport bugReport =
-        BugReport.builder()
-            .content(req.content())
-            .product(product)
-            .user(user)
-            .fileUrl(fileUrl)
-            .build();
+        Product product = productService.checkProduct(productId);
+        String fileUrl = s3Util.uploadFile(multipartFile, FilePath.BUGREPORT);
+        BugReport bugReport =
+                BugReport.builder()
+                        .content(req.content())
+                        .product(product)
+                        .user(user)
+                        .fileUrl(fileUrl)
+                        .build();
 
-    BugReport saveBugReport = bugReportRepository.save(bugReport);
+        BugReport saveBugReport = bugReportRepository.save(bugReport);
 
-    return CreateBugReportResponseDTO.of(saveBugReport);
-  }
-
-  public ReadBugReportResponseDTO getBugReport(Long bugReportId, Long productId, User user) {
-
-    Product product = productService.checkProduct(productId);
-
-    if (!product.getUser().getId().equals(user.getId())) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_BUGREPORT_NOT_FOUND);
+        return CreateBugReportResponseDTO.of(saveBugReport);
     }
 
-    return ReadBugReportResponseDTO.of(
-        bugReportRepository
-            .findByProductIdAndId(productId, bugReportId)
-            .orElseThrow(
-                () ->
-                    new GlobalExceptionHandler.CustomException(
-                        ErrorCode.SELECT_BUGREPORT_NOT_FOUND)));
-  }
+    public ReadBugReportResponseDTO getBugReport(Long bugReportId, Long productId, User user) {
 
-  public Page<ReadPageBugReportResponseDTO> getBugReportPage(
-      Pageable pageable, Long productId, User user) {
+        Product product = productService.checkProduct(productId);
 
-    int page = pageable.getPageNumber() - 1;
-    int pageLimit = 10;
-    Product product = productService.checkProduct(productId);
+        if (!product.getUser().getId().equals(user.getId())) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_BUGREPORT_NOT_FOUND);
+        }
 
-    if (product.getUser().getId().equals(user.getId())) {
-      Page<BugReport> bugReportPage =
-          bugReportRepository.findAllByProductId(
-              productId, PageRequest.of(page, pageLimit, Sort.by(Direction.DESC, "id")));
-
-      List<ReadPageBugReportResponseDTO> resList = new ArrayList<>();
-
-      for (BugReport bugReport : bugReportPage) {
-        ReadPageBugReportResponseDTO res = ReadPageBugReportResponseDTO.of(bugReport);
-        resList.add(res);
-      }
-
-      return new PageImpl<>(resList, pageable, bugReportPage.getTotalElements());
+        return ReadBugReportResponseDTO.of(
+                bugReportRepository
+                        .findByProductIdAndId(productId, bugReportId)
+                        .orElseThrow(
+                                () ->
+                                        new GlobalExceptionHandler.CustomException(
+                                                ErrorCode.SELECT_BUGREPORT_NOT_FOUND)));
     }
 
-    throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_BUGREPORT_INVALID);
-  }
+    public Page<ReadPageBugReportResponseDTO> getBugReportPage(
+            Pageable pageable, Long productId, User user) {
+
+        int page = pageable.getPageNumber() - 1;
+        int pageLimit = 10;
+        Product product = productService.checkProduct(productId);
+
+        if (product.getUser().getId().equals(user.getId())) {
+            Page<BugReport> bugReportPage =
+                    bugReportRepository.findAllByProductId(
+                            productId, PageRequest.of(page, pageLimit, Sort.by(Direction.DESC, "id")));
+
+            List<ReadPageBugReportResponseDTO> resList = new ArrayList<>();
+
+            for (BugReport bugReport : bugReportPage) {
+                ReadPageBugReportResponseDTO res = ReadPageBugReportResponseDTO.of(bugReport);
+                resList.add(res);
+            }
+
+            return new PageImpl<>(resList, pageable, bugReportPage.getTotalElements());
+        }
+
+        throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_BUGREPORT_INVALID);
+    }
 }

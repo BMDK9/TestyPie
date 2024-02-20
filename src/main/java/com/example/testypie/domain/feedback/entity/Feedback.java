@@ -17,47 +17,47 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Feedback extends TimeStamp {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<FeedbackDetails> feedbackDetailsList = new ArrayList<>();
+    @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FeedbackDetails> feedbackDetailsList = new ArrayList<>();
 
-  @JoinColumn
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "productId")
-  private Product product;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "productId")
+    private Product product;
 
-  @ManyToOne @JoinColumn private Survey survey;
+    @ManyToOne @JoinColumn private Survey survey;
 
-  @Column private Double rating;
+    @Column private Double rating;
 
-  @Builder
-  private Feedback(Long id, Double rating, User user, Product product, Survey survey) {
+    @Builder
+    private Feedback(Long id, Double rating, User user, Product product, Survey survey) {
 
-    this.id = id;
-    this.feedbackDetailsList = new ArrayList<>();
-    this.user = user;
-    this.product = product;
-    this.rating = rating;
-    this.survey = survey;
-  }
-
-  public void assignRating(RatingStarRequestDTO req) {
-    this.rating = req.rating();
-  }
-
-  public void setFeedbackDetailsList(List<FeedbackDetails> detailslist) {
-
-    if (detailslist != null) {
-      this.feedbackDetailsList = detailslist;
-      detailslist.forEach(feedbackDetails -> FeedbackDetails.builder().feedback(this).build());
-    } else {
-      throw new IllegalArgumentException("Feedback에 Question은 반드시 들어가야 합니다.");
+        this.id = id;
+        this.feedbackDetailsList = new ArrayList<>();
+        this.user = user;
+        this.product = product;
+        this.rating = rating;
+        this.survey = survey;
     }
-  }
+
+    public void assignRating(RatingStarRequestDTO req) {
+        this.rating = req.rating();
+    }
+
+    public void setFeedbackDetailsList(List<FeedbackDetails> detailslist) {
+
+        if (detailslist != null) {
+            this.feedbackDetailsList = detailslist;
+            detailslist.forEach(feedbackDetails -> FeedbackDetails.builder().feedback(this).build());
+        } else {
+            throw new IllegalArgumentException("Feedback에 Question은 반드시 들어가야 합니다.");
+        }
+    }
 }

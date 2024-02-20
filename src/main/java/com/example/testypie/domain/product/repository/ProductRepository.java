@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, SearchRepository {
 
-  Page<Product> findAllByCategory_id(Long childCategory_id, PageRequest id);
+    Page<Product> findAllByCategory_id(Long childCategory_id, PageRequest id);
 
-  List<Product> findBySurveyIdIsNull();
+    List<Product> findBySurveyIdIsNull();
 
-  @Query("SELECT p FROM Product p ORDER BY p.productLikeCnt DESC")
-  Page<Product> findAllSortedByProductLikeCnt(Pageable pageable);
+    @Query("SELECT p FROM Product p ORDER BY p.productLikeCnt DESC")
+    Page<Product> findAllSortedByProductLikeCnt(Pageable pageable);
 
-  @Query(
-      "SELECT p FROM Product p WHERE p.category IN (SELECT c FROM Category c WHERE c.parent.id = :parentId)")
-  Page<Product> findByParentCategoryId(@Param("parentId") Long parentId, Pageable pageable);
+    @Query(
+            "SELECT p FROM Product p WHERE p.category IN (SELECT c FROM Category c WHERE c.parent.id = :parentId)")
+    Page<Product> findByParentCategoryId(@Param("parentId") Long parentId, Pageable pageable);
 }

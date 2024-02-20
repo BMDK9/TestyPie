@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SearchRepository {
 
-  Page<Product> searchAllByKeyword(Pageable pageable, Long childCategoryId, String keyWord);
+    Page<Product> searchAllByKeyword(Pageable pageable, Long childCategoryId, String keyWord);
 }
