@@ -50,11 +50,8 @@ public class S3Util {
         return metadata;
     }
 
-    public String uploadFile(MultipartFile multipartFile, FilePath filePath) { // 업로드는 잘 됨
-        // 업로드할 파일이 존재하지 않거나 비어있으면 null 반환
-        //        if (multipartFile == null || multipartFile.isEmpty()) {
-        //            return null;
-        //        }
+    public String uploadFile(MultipartFile multipartFile, FilePath filePath) {
+
         // 업로드할 파일이 이미지인 경우에만 실행
         if (Objects.requireNonNull(multipartFile.getContentType()).contains("image")) {
             // 업로드할 파일의 고유한 파일명 생성
