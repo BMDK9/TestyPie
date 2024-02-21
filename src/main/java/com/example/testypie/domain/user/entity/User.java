@@ -17,71 +17,71 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false, unique = true)
-  private String account;
+    @Column(nullable = false, unique = true)
+    private String account;
 
-  @Column(nullable = false)
-  private String password;
+    @Column(nullable = false)
+    private String password;
 
-  @Column(nullable = false, unique = true)
-  @Email
-  private String email;
+    @Column(nullable = false, unique = true)
+    @Email
+    private String email;
 
-  @Column(nullable = false, unique = true)
-  private String nickname;
+    @Column(nullable = false, unique = true)
+    private String nickname;
 
-  @Column private String description;
+    @Column private String description;
 
-  @Column(name = "user_role")
-  @Enumerated(EnumType.STRING)
-  private UserRole userRole;
+    @Column(name = "user_role")
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
-  private Long kakaoId;
+    private Long kakaoId;
 
-  @OneToMany @JoinColumn private List<Reward> rewardList = new ArrayList<>();
+    @OneToMany @JoinColumn private List<Reward> rewardList = new ArrayList<>();
 
-  @Column private String fileUrl;
+    @Column private String fileUrl;
 
-  @Builder
-  private User(
-      Long id,
-      String account,
-      String password,
-      String email,
-      String nickname,
-      String description,
-      UserRole userRole,
-      String fileUrl,
-      Long kakaoId) {
+    @Builder
+    private User(
+            Long id,
+            String account,
+            String password,
+            String email,
+            String nickname,
+            String description,
+            UserRole userRole,
+            String fileUrl,
+            Long kakaoId) {
 
-    this.id = id;
-    this.account = account;
-    this.password = password;
-    this.email = email;
-    this.nickname = nickname;
-    this.description = description;
-    this.userRole = userRole;
-    this.fileUrl = fileUrl;
-    this.kakaoId = kakaoId;
-  }
+        this.id = id;
+        this.account = account;
+        this.password = password;
+        this.email = email;
+        this.nickname = nickname;
+        this.description = description;
+        this.userRole = userRole;
+        this.fileUrl = fileUrl;
+        this.kakaoId = kakaoId;
+    }
 
-  public void update(UpdateProfileRequestDTO req, String fileUrl) {
-    if (req.nickname() != null && !req.nickname().isEmpty()) this.nickname = req.nickname();
-    if (req.description() != null && !req.description().isEmpty())
-      this.description = req.description();
-    this.fileUrl = fileUrl;
-  }
+    public void update(UpdateProfileRequestDTO req, String fileUrl) {
+        if (req.nickname() != null && !req.nickname().isEmpty()) this.nickname = req.nickname();
+        if (req.description() != null && !req.description().isEmpty())
+            this.description = req.description();
+        this.fileUrl = fileUrl;
+    }
 
-  public User kakaoIdUpdate(Long kakaoId) {
-    if (kakaoId != null) this.kakaoId = kakaoId;
-    return this;
-  }
+    public User kakaoIdUpdate(Long kakaoId) {
+        if (kakaoId != null) this.kakaoId = kakaoId;
+        return this;
+    }
 
-  public void updatePassword(String password) {
-    if (password != null && !password.isEmpty()) this.password = password;
-  }
+    public void updatePassword(String password) {
+        if (password != null && !password.isEmpty()) this.password = password;
+    }
 }

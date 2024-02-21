@@ -16,34 +16,34 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class SearchRepositoryImpl implements SearchRepository {
 
-  private final JPQLQueryFactory queryFactory;
+    private final JPQLQueryFactory queryFactory;
 
-  @Override
-  public Page<Product> searchAllByKeyword(Pageable pageable, Long childCategoryId, String keyword) {
+    @Override
+    public Page<Product> searchAllByKeyword(Pageable pageable, Long childCategoryId, String keyword) {
 
-    QProduct product = QProduct.product;
+        QProduct product = QProduct.product;
 
-    JPQLQuery<Product> query =
-        queryFactory
-            .selectFrom(product)
-            .where(
-                product
-                    .category
-                    .id
-                    .eq(childCategoryId)
-                    .and(
-                        product
-                            .title
-                            .containsIgnoreCase(keyword)
-                            .or(product.user.nickname.containsIgnoreCase(keyword))))
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize() + 1)
-            .orderBy(product.createdAt.desc());
+        JPQLQuery<Product> query =
+                queryFactory
+                        .selectFrom(product)
+                        .where(
+                                product
+                                        .category
+                                        .id
+                                        .eq(childCategoryId)
+                                        .and(
+                                                product
+                                                        .title
+                                                        .containsIgnoreCase(keyword)
+                                                        .or(product.user.nickname.containsIgnoreCase(keyword))))
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize() + 1)
+                        .orderBy(product.createdAt.desc());
 
-    QueryResults<Product> results = query.fetchResults();
-    List<Product> contents = results.getResults();
-    long contentCnt = results.getTotal();
+        QueryResults<Product> results = query.fetchResults();
+        List<Product> contents = results.getResults();
+        long contentCnt = results.getTotal();
 
-    return new PageImpl<>(contents, pageable, contentCnt);
-  }
+        return new PageImpl<>(contents, pageable, contentCnt);
+    }
 }

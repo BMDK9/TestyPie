@@ -20,32 +20,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class SurveyController {
-  private final SurveyService surveyService;
+    private final SurveyService surveyService;
 
-  @GetMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/survey")
-  public ResponseEntity<ReadSurveyResponseDTO> getSurvey(
-      @PathVariable Long productId,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @GetMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/survey")
+    public ResponseEntity<ReadSurveyResponseDTO> getSurvey(
+            @PathVariable Long productId,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    ReadSurveyResponseDTO res =
-        surveyService.getSurvey(productId, childCategoryId, parentCategoryName);
+        ReadSurveyResponseDTO res =
+                surveyService.getSurvey(productId, childCategoryId, parentCategoryName);
 
-    return ResponseEntity.ok(res);
-  }
+        return ResponseEntity.ok(res);
+    }
 
-  @PostMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/surveys")
-  public ResponseEntity<CreateSurveyResponseDTO> addSurvey(
-      @RequestBody CreateSurveyRequestDTO req,
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      @PathVariable Long productId,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @PostMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/surveys")
+    public ResponseEntity<CreateSurveyResponseDTO> addSurvey(
+            @RequestBody CreateSurveyRequestDTO req,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long productId,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    CreateSurveyResponseDTO res =
-        surveyService.addSurvey(
-            req, productId, userDetails.getUser(), childCategoryId, parentCategoryName);
+        CreateSurveyResponseDTO res =
+                surveyService.addSurvey(
+                        req, productId, userDetails.getUser(), childCategoryId, parentCategoryName);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(res);
-  }
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
 }

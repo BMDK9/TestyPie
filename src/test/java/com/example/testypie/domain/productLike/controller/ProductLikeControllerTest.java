@@ -10,22 +10,22 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class ProductLikeControllerTest extends ControllerTestSupport {
 
-  @BeforeEach
-  void setUp() {
-    mockMvc =
-        MockMvcBuilders.webAppContextSetup(webApplicationContext)
-            .apply(springSecurity(new MockSpringSecurityFilter()))
-            .alwaysDo(print())
-            .build();
-  }
+    @BeforeEach
+    void setUp() {
+        mockMvc =
+                MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                        .apply(springSecurity(new MockSpringSecurityFilter()))
+                        .alwaysDo(print())
+                        .build();
+    }
 
-  //    @DisplayName("Product 좋아요 클릭")
-  //    @Test
-  //    void clickProductLike() throws Exception {
-  //        //given
-  //
-  //        //when
-  //
-  //        //then
-  //    }
+    //    @DisplayName("Product 좋아요 클릭")
+    //    @Test
+    //    void clickProductLike() throws Exception {
+    //        //given
+    //
+    //        //when
+    //
+    //        //then
+    //    }
 }

@@ -13,38 +13,38 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CategoryService {
 
-  private final CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-  public CreateCategoryResponseDTO createCategory(CreateCategoryRequestDTO req) {
+    public CreateCategoryResponseDTO createCategory(CreateCategoryRequestDTO req) {
 
-    Category parentName = categoryRepository.findByName(req.parent());
-    Category category =
-        Category.builder().name(req.name()).depth((long) 1).parent(parentName).build();
-    Category saveCategory = categoryRepository.save(category);
-    return CreateCategoryResponseDTO.of(saveCategory);
-  }
-
-  public Category getParentCategory(String parentCategoryName) {
-
-    return categoryRepository.findByName(parentCategoryName);
-  }
-
-  public Category checkCategory(Long categoryId, String parentCategoryName) {
-
-    Category childCategory =
-        categoryRepository
-            .findById(categoryId)
-            .orElseThrow(
-                () ->
-                    new GlobalExceptionHandler.CustomException(
-                        ErrorCode.SELECT_CATEGORY_NOT_FOUND));
-
-    Category parentCategory = categoryRepository.findByName(parentCategoryName);
-
-    if (childCategory.getParent() == parentCategory) {
-      return childCategory;
-    } else {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_CATEGORY_NOT_MATCH);
+        Category parentName = categoryRepository.findByName(req.parent());
+        Category category =
+                Category.builder().name(req.name()).depth((long) 1).parent(parentName).build();
+        Category saveCategory = categoryRepository.save(category);
+        return CreateCategoryResponseDTO.of(saveCategory);
     }
-  }
+
+    public Category getParentCategory(String parentCategoryName) {
+
+        return categoryRepository.findByName(parentCategoryName);
+    }
+
+    public Category checkCategory(Long categoryId, String parentCategoryName) {
+
+        Category childCategory =
+                categoryRepository
+                        .findById(categoryId)
+                        .orElseThrow(
+                                () ->
+                                        new GlobalExceptionHandler.CustomException(
+                                                ErrorCode.SELECT_CATEGORY_NOT_FOUND));
+
+        Category parentCategory = categoryRepository.findByName(parentCategoryName);
+
+        if (childCategory.getParent() == parentCategory) {
+            return childCategory;
+        } else {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_CATEGORY_NOT_MATCH);
+        }
+    }
 }

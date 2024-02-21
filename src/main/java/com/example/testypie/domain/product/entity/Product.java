@@ -34,143 +34,143 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Product extends TimeStamp {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @JoinColumn
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-  @Column private String title;
+    @Column private String title;
 
-  @Column private String content;
+    @Column private String content;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JsonIgnore
-  private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Category category;
 
-  @Column(nullable = false)
-  private Long productLikeCnt;
+    @Column(nullable = false)
+    private Long productLikeCnt;
 
-  @Column private LocalDateTime startedAt;
+    @Column private LocalDateTime startedAt;
 
-  @Column private LocalDateTime closedAt;
+    @Column private LocalDateTime closedAt;
 
-  @OneToMany(
-      mappedBy = "product",
-      targetEntity = Comment.class,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  @JsonIgnore
-  private List<Comment> commentList = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "product",
+            targetEntity = Comment.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> commentList = new ArrayList<>();
 
-  @JsonIgnore
-  @OneToMany(
-      mappedBy = "product",
-      targetEntity = Reward.class,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  private List<Reward> rewardList = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(
+            mappedBy = "product",
+            targetEntity = Reward.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Reward> rewardList = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "product",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      fetch = FetchType.LAZY)
-  @JsonIgnore
-  private List<Feedback> feedback = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Feedback> feedback = new ArrayList<>();
 
-  @OneToMany(
-      mappedBy = "product",
-      targetEntity = ProductLike.class,
-      cascade = CascadeType.REMOVE,
-      orphanRemoval = true)
-  private List<ProductLike> productLikeList = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "product",
+            targetEntity = ProductLike.class,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true)
+    private List<ProductLike> productLikeList = new ArrayList<>();
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "survey_id")
-  private Survey survey;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "survey_id")
+    private Survey survey;
 
-  @Builder
-  private Product(
-      Long id,
-      User user,
-      String title,
-      String content,
-      Category category,
-      List<Reward> rewardList,
-      LocalDateTime startedAt,
-      LocalDateTime closedAt,
-      List<Comment> commentList,
-      Long productLikeCnt,
-      Survey survey) {
+    @Builder
+    private Product(
+            Long id,
+            User user,
+            String title,
+            String content,
+            Category category,
+            List<Reward> rewardList,
+            LocalDateTime startedAt,
+            LocalDateTime closedAt,
+            List<Comment> commentList,
+            Long productLikeCnt,
+            Survey survey) {
 
-    this.id = id;
-    this.user = user;
-    this.title = title;
-    this.content = content;
-    this.category = category;
-    this.rewardList = rewardList;
-    this.startedAt = startedAt;
-    this.closedAt = closedAt;
-    this.commentList = commentList;
-    this.productLikeCnt = productLikeCnt;
-    this.survey = survey;
-  }
-
-  public void updateTitle(String title) {
-    if (!title.isEmpty()) {
-      this.title = title;
+        this.id = id;
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.rewardList = rewardList;
+        this.startedAt = startedAt;
+        this.closedAt = closedAt;
+        this.commentList = commentList;
+        this.productLikeCnt = productLikeCnt;
+        this.survey = survey;
     }
-  }
 
-  public void updateContent(String content) {
-    if (!content.isEmpty()) {
-      this.content = content;
+    public void updateTitle(String title) {
+        if (!title.isEmpty()) {
+            this.title = title;
+        }
     }
-  }
 
-  public void updateStartAt(LocalDateTime startedAt) {
-    if (startedAt != null) {
-      this.startedAt = startedAt;
+    public void updateContent(String content) {
+        if (!content.isEmpty()) {
+            this.content = content;
+        }
     }
-  }
 
-  public void updateClosedAt(LocalDateTime closedAt) {
-    if (closedAt != null) {
-      this.closedAt = closedAt;
+    public void updateStartAt(LocalDateTime startedAt) {
+        if (startedAt != null) {
+            this.startedAt = startedAt;
+        }
     }
-  }
 
-  public void updateCategory(Category category) {
-    if (category != null) {
-      this.category = category;
+    public void updateClosedAt(LocalDateTime closedAt) {
+        if (closedAt != null) {
+            this.closedAt = closedAt;
+        }
     }
-  }
 
-  public void setRewardList(List<Reward> rewardList) {
-    if (rewardList != null) {
-      this.rewardList = rewardList;
-      rewardList.forEach(reward -> Reward.builder().product(this).build());
-    } else {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.PRODUCT_REWARD_IS_NOT_NULL);
+    public void updateCategory(Category category) {
+        if (category != null) {
+            this.category = category;
+        }
     }
-  }
 
-  public void updateProductLikeCnt(boolean clickProductLike) {
-    if (clickProductLike) {
-      this.productLikeCnt++;
-      return;
+    public void setRewardList(List<Reward> rewardList) {
+        if (rewardList != null) {
+            this.rewardList = rewardList;
+            rewardList.forEach(reward -> Reward.builder().product(this).build());
+        } else {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.PRODUCT_REWARD_IS_NOT_NULL);
+        }
     }
-    this.productLikeCnt--;
-  }
 
-  public void setSurvey(Survey survey) {
-    if (survey != null) {
-      this.survey = survey;
-    } else {
-      throw new IllegalArgumentException("Product에 설문지는 반드시 들어가야 합니다.");
+    public void updateProductLikeCnt(boolean clickProductLike) {
+        if (clickProductLike) {
+            this.productLikeCnt++;
+            return;
+        }
+        this.productLikeCnt--;
     }
-  }
+
+    public void setSurvey(Survey survey) {
+        if (survey != null) {
+            this.survey = survey;
+        } else {
+            throw new IllegalArgumentException("Product에 설문지는 반드시 들어가야 합니다.");
+        }
+    }
 }

@@ -34,104 +34,104 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/api/users")
 public class ProfileController {
 
-  private final UserInfoService userInfoService;
+    private final UserInfoService userInfoService;
 
-  @GetMapping("/{account}")
-  public ModelAndView getProfile(@PathVariable String account, Model model) {
+    @GetMapping("/{account}")
+    public ModelAndView getProfile(@PathVariable String account, Model model) {
 
-    User user = userInfoService.findProfile(account);
-    ReadProfileResponseDTO res = ReadProfileResponseDTO.of(user);
+        User user = userInfoService.findProfile(account);
+        ReadProfileResponseDTO res = ReadProfileResponseDTO.of(user);
 
-    ModelAndView modelAndView = new ModelAndView();
-    modelAndView.setViewName("profile");
-    model.addAttribute("profile", res);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("profile");
+        model.addAttribute("profile", res);
 
-    return modelAndView;
-  }
-
-  @PatchMapping(
-      value = "/{account}/update",
-      consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<?> updateProfile(
-      @PathVariable String account,
-      @Valid @RequestPart(value = "req", required = false) UpdateProfileRequestDTO req,
-      @RequestPart(value = "file", required = false) MultipartFile multipartFile,
-      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-    try {
-      User user = userDetails.getUser();
-      UpdateProfileResponseDTO res =
-          userInfoService.updateProfile(account, req, multipartFile, user);
-      return ResponseEntity.ok(res);
-    } catch (NoSuchElementException e) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_PROFILE_USER_NOT_FOUND);
-    } catch (Exception e) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.UPDATE_PROFILE_BAD_REQUEST);
+        return modelAndView;
     }
-  }
 
-  @GetMapping("/{account}/registeredProducts")
-  public ResponseEntity<List<RegisteredProductResponseDTO>> getRegisteredProducts(
-      @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PatchMapping(
+            value = "/{account}/update",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updateProfile(
+            @PathVariable String account,
+            @Valid @RequestPart(value = "req", required = false) UpdateProfileRequestDTO req,
+            @RequestPart(value = "file", required = false) MultipartFile multipartFile,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    User user = userDetails.getUser();
-    userInfoService.checkSameUser(account, user.getAccount());
-    List<RegisteredProductResponseDTO> res = userInfoService.getUserProducts(account);
+        try {
+            User user = userDetails.getUser();
+            UpdateProfileResponseDTO res =
+                    userInfoService.updateProfile(account, req, multipartFile, user);
+            return ResponseEntity.ok(res);
+        } catch (NoSuchElementException e) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_PROFILE_USER_NOT_FOUND);
+        } catch (Exception e) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.UPDATE_PROFILE_BAD_REQUEST);
+        }
+    }
 
-    return ResponseEntity.ok().body(res);
-  }
+    @GetMapping("/{account}/registeredProducts")
+    public ResponseEntity<List<RegisteredProductResponseDTO>> getRegisteredProducts(
+            @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-  @GetMapping("{account}/participatedProducts")
-  public ResponseEntity<List<ParticipatedProductResponseDTO>> getParticipatedProducts(
-      @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+        userInfoService.checkSameUser(account, user.getAccount());
+        List<RegisteredProductResponseDTO> res = userInfoService.getUserProducts(account);
 
-    userInfoService.checkSameUser(account, userDetails.getUsername());
+        return ResponseEntity.ok().body(res);
+    }
 
-    List<ParticipatedProductResponseDTO> res = userInfoService.getUserParticipatedProducts(account);
+    @GetMapping("{account}/participatedProducts")
+    public ResponseEntity<List<ParticipatedProductResponseDTO>> getParticipatedProducts(
+            @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    return ResponseEntity.ok().body(res);
-  }
+        userInfoService.checkSameUser(account, userDetails.getUsername());
 
-  @GetMapping("{account}/averageStarRating")
-  public ResponseEntity<AverageRatingResponseDTO> getAverageStarRating(
-      @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    userInfoService.checkSameUser(account, userDetails.getUsername());
+        List<ParticipatedProductResponseDTO> res = userInfoService.getUserParticipatedProducts(account);
 
-    double averageRating = userInfoService.getAverageRating(account);
+        return ResponseEntity.ok().body(res);
+    }
 
-    AverageRatingResponseDTO res = new AverageRatingResponseDTO(averageRating);
-    return ResponseEntity.ok().body(res);
-  }
+    @GetMapping("{account}/averageStarRating")
+    public ResponseEntity<AverageRatingResponseDTO> getAverageStarRating(
+            @PathVariable String account, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userInfoService.checkSameUser(account, userDetails.getUsername());
 
-  @PostMapping("/{account}/ratingStar/{productId}/{feedbackId}")
-  public ResponseEntity<ResponseMessageDTO> evaluateFeedback(
-      @PathVariable String account,
-      @PathVariable Long productId,
-      @PathVariable Long feedbackId,
-      @ModelAttribute RatingStarRequestDTO req
-      /*@AuthenticationPrincipal UserDetailsImpl userDetails*/ ) {
+        double averageRating = userInfoService.getAverageRating(account);
 
+        AverageRatingResponseDTO res = new AverageRatingResponseDTO(averageRating);
+        return ResponseEntity.ok().body(res);
+    }
+
+    @PostMapping("/{account}/ratingStar/{productId}/{feedbackId}")
+    public ResponseEntity<ResponseMessageDTO> evaluateFeedback(
+            @PathVariable String account,
+            @PathVariable Long productId,
+            @PathVariable Long feedbackId,
+            @ModelAttribute RatingStarRequestDTO req
+            /*@AuthenticationPrincipal UserDetailsImpl userDetails*/ ) {
+
+        //    userInfoService.checkSameUser(account, userDetails.getUsername());
+        Feedback feedback = userInfoService.checkFeedback(productId, feedbackId);
+        userInfoService.assignRatingStarAtFeedback(feedback, req);
+        String message = String.format("별점이 %.1f점 매겨졌습니다.", req.rating());
+
+        return ResponseEntity.ok().body(new ResponseMessageDTO(message, HttpStatus.OK.value()));
+    }
+
+    //  랜덤로직
+    //  @GetMapping("/{account}/lotto/{productId}")
+    //  public ResponseEntity<LottoResponseDTO> chooseRewardUser(
+    //      @PathVariable String account,
+    //      @PathVariable Long productId,
+    //      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    //
     //    userInfoService.checkSameUser(account, userDetails.getUsername());
-    Feedback feedback = userInfoService.checkFeedback(productId, feedbackId);
-    userInfoService.assignRatingStarAtFeedback(feedback, req);
-    String message = String.format("별점이 %.1f점 매겨졌습니다.", req.rating());
-
-    return ResponseEntity.ok().body(new ResponseMessageDTO(message, HttpStatus.OK.value()));
-  }
-
-  //  랜덤로직
-  //  @GetMapping("/{account}/lotto/{productId}")
-  //  public ResponseEntity<LottoResponseDTO> chooseRewardUser(
-  //      @PathVariable String account,
-  //      @PathVariable Long productId,
-  //      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-  //
-  //    userInfoService.checkSameUser(account, userDetails.getUsername());
-  //    List<User> userList = userInfoService.drawUsers(productId);
-  //
-  //    return ResponseEntity.ok()
-  //        .body(
-  //            new LottoResponseDTO(
-  //                userList.stream().map(User::getAccount).collect(Collectors.toList())));
-  //  }
+    //    List<User> userList = userInfoService.drawUsers(productId);
+    //
+    //    return ResponseEntity.ok()
+    //        .body(
+    //            new LottoResponseDTO(
+    //                userList.stream().map(User::getAccount).collect(Collectors.toList())));
+    //  }
 }

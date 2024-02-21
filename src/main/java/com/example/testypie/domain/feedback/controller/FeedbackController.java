@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class FeedbackController {
-  private final FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
-  @PostMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/feedback")
-  public ResponseEntity<CreateFeedbackResponseDTO> addFeedback(
-      @RequestBody CreateFeedbackRequestDTO req,
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      @PathVariable Long productId,
-      @PathVariable Long childCategoryId,
-      @PathVariable String parentCategoryName) {
+    @PostMapping("/category/{parentCategoryName}/{childCategoryId}/products/{productId}/feedback")
+    public ResponseEntity<CreateFeedbackResponseDTO> addFeedback(
+            @RequestBody CreateFeedbackRequestDTO req,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long productId,
+            @PathVariable Long childCategoryId,
+            @PathVariable String parentCategoryName) {
 
-    CreateFeedbackResponseDTO res =
-        feedbackService.createFeedback(
-            req, productId, userDetails.getUser(), childCategoryId, parentCategoryName);
+        CreateFeedbackResponseDTO res =
+                feedbackService.createFeedback(
+                        req, productId, userDetails.getUser(), childCategoryId, parentCategoryName);
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(res);
-  }
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
 }

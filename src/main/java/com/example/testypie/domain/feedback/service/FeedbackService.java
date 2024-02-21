@@ -26,85 +26,85 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FeedbackService {
 
-  private final FeedbackRepository feedbackRepository;
-  private final ProductService productService;
-  private final CategoryService categoryService;
-  private final SurveyService surveyService;
+    private final FeedbackRepository feedbackRepository;
+    private final ProductService productService;
+    private final CategoryService categoryService;
+    private final SurveyService surveyService;
 
-  public CreateFeedbackResponseDTO createFeedback(
-      CreateFeedbackRequestDTO req,
-      Long productId,
-      User user,
-      Long childCategoryId,
-      String parentCategoryName) {
+    public CreateFeedbackResponseDTO createFeedback(
+            CreateFeedbackRequestDTO req,
+            Long productId,
+            User user,
+            Long childCategoryId,
+            String parentCategoryName) {
 
-    Category category = categoryService.checkCategory(childCategoryId, parentCategoryName);
-    Product product = productService.checkProduct(productId);
-    Survey survey = surveyService.checkSurveyById(product.getSurvey().getId());
+        Category category = categoryService.checkCategory(childCategoryId, parentCategoryName);
+        Product product = productService.checkProduct(productId);
+        Survey survey = surveyService.checkSurveyById(product.getSurvey().getId());
 
-    if (product.getUser().getId().equals(user.getId())) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_NOT_ALLOWED);
+        if (product.getUser().getId().equals(user.getId())) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_NOT_ALLOWED);
+        }
+
+        if (LocalDateTime.now().isAfter(product.getClosedAt())) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_PASSED_DUE_DATE);
+        }
+
+        if (!category.getId().equals(product.getCategory().getId())) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_PRODUCT_CATEGORY_NOT_FOUND);
+        }
+
+        boolean hasSubmitted = feedbackRepository.existsByUserAndSurvey(user, survey);
+        if (hasSubmitted) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_ALREADY_SUBMITTED);
+        }
+
+        Feedback feedback = Feedback.builder().user(user).product(product).survey(survey).build();
+
+        List<FeedbackDetails> detailslist = new ArrayList<>();
+        for (CreateFeedbackDetailsRequestDTO feedbackDetailsDTO : req.feedbackDetailsList()) {
+            FeedbackDetails feedbackDetails =
+                    FeedbackDetails.builder()
+                            .feedback(feedback)
+                            .response(feedbackDetailsDTO.response())
+                            .build();
+
+            detailslist.add(feedbackDetails);
+        }
+
+        feedback.setFeedbackDetailsList(detailslist);
+        Feedback savedFeedback = feedbackRepository.save(feedback);
+        return new CreateFeedbackResponseDTO(savedFeedback);
     }
 
-    if (LocalDateTime.now().isAfter(product.getClosedAt())) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_PASSED_DUE_DATE);
+    public double checkAverageRating(User user) {
+
+        return feedbackRepository
+                .findAverageScoreByUserId(user.getId())
+                .orElseThrow(
+                        () ->
+                                new GlobalExceptionHandler.CustomException(
+                                        ErrorCode.PROFILE_AVERAGE_FEEDBACK_RATING_NULL));
     }
 
-    if (!category.getId().equals(product.getCategory().getId())) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_PRODUCT_CATEGORY_NOT_FOUND);
+    public Feedback checkFeedback(Long productId, Long feedbackId) {
+
+        return feedbackRepository
+                .findByProductIdAndId(productId, feedbackId)
+                .orElseThrow(
+                        () -> new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_FEEDBACK_NOT_FOUND));
     }
 
-    boolean hasSubmitted = feedbackRepository.existsByUserAndSurvey(user, survey);
-    if (hasSubmitted) {
-      throw new GlobalExceptionHandler.CustomException(ErrorCode.CREATE_FEEDBACK_ALREADY_SUBMITTED);
+    public void assignFeedbackRatingStar(Feedback feedback, RatingStarRequestDTO req) {
+
+        feedback.assignRating(req);
+        feedbackRepository.save(feedback);
     }
 
-    Feedback feedback = Feedback.builder().user(user).product(product).survey(survey).build();
-
-    List<FeedbackDetails> detailslist = new ArrayList<>();
-    for (CreateFeedbackDetailsRequestDTO feedbackDetailsDTO : req.feedbackDetailsList()) {
-      FeedbackDetails feedbackDetails =
-          FeedbackDetails.builder()
-              .feedback(feedback)
-              .response(feedbackDetailsDTO.response())
-              .build();
-
-      detailslist.add(feedbackDetails);
+    public List<Feedback> getAllFeedbacksByProductId(Long productId) {
+        return feedbackRepository
+                .findAllFeedbacksByProductId(productId)
+                .orElseThrow(
+                        () -> new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_FEEDBACK_NOT_FOUND));
     }
-
-    feedback.setFeedbackDetailsList(detailslist);
-    Feedback savedFeedback = feedbackRepository.save(feedback);
-    return new CreateFeedbackResponseDTO(savedFeedback);
-  }
-
-  public double checkAverageRating(User user) {
-
-    return feedbackRepository
-        .findAverageScoreByUserId(user.getId())
-        .orElseThrow(
-            () ->
-                new GlobalExceptionHandler.CustomException(
-                    ErrorCode.PROFILE_AVERAGE_FEEDBACK_RATING_NULL));
-  }
-
-  public Feedback checkFeedback(Long productId, Long feedbackId) {
-
-    return feedbackRepository
-        .findByProductIdAndId(productId, feedbackId)
-        .orElseThrow(
-            () -> new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_FEEDBACK_NOT_FOUND));
-  }
-
-  public void assignFeedbackRatingStar(Feedback feedback, RatingStarRequestDTO req) {
-
-    feedback.assignRating(req);
-    feedbackRepository.save(feedback);
-  }
-
-  public List<Feedback> getAllFeedbacksByProductId(Long productId) {
-    return feedbackRepository
-        .findAllFeedbacksByProductId(productId)
-        .orElseThrow(
-            () -> new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_FEEDBACK_NOT_FOUND));
-  }
 }

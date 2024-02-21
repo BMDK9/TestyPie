@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  public UserDetailsImpl getUserDetails(String account) {
-    User user =
-        userRepository
-            .findByAccount(account)
-            .orElseThrow(() -> new UsernameNotFoundException("Not Found" + account));
-    return new UserDetailsImpl(user);
-  }
+    public UserDetailsImpl getUserDetails(String account) {
+        User user =
+                userRepository
+                        .findByAccount(account)
+                        .orElseThrow(() -> new UsernameNotFoundException("Not Found" + account));
+        return new UserDetailsImpl(user);
+    }
 }

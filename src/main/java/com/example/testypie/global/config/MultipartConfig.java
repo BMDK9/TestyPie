@@ -13,18 +13,18 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 @Configuration
 public class MultipartConfig {
 
-  @Bean
-  public MultipartResolver multipartResolver() {
-    return new StandardServletMultipartResolver();
-  }
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
 
-  @Bean
-  public MultipartConfigElement multipartConfigElement() {
-    MultipartConfigFactory factory = new MultipartConfigFactory();
-    factory.setLocation("c:\\shop");
-    factory.setMaxRequestSize(DataSize.ofMegabytes(100L));
-    factory.setMaxFileSize(DataSize.ofMegabytes(100L));
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setLocation("c:\\shop");
+        factory.setMaxRequestSize(DataSize.ofMegabytes(100L));
+        factory.setMaxFileSize(DataSize.ofMegabytes(100L));
 
-    return factory.createMultipartConfig();
-  }
+        return factory.createMultipartConfig();
+    }
 }

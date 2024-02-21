@@ -18,26 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RewardController {
 
-  private final RewardService rewardService;
-  private final UserInfoService userInfoService;
+    private final RewardService rewardService;
+    private final UserInfoService userInfoService;
 
-  //  사용 예정 (랜덤 로직)
-  //  @GetMapping("/reward")
-  //  public ResponseEntity<List<ReadRewardResponseDTO>> getRewardList(
-  //      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-  //
-  //    List<ReadRewardResponseDTO> resList = rewardService.getRewardList(userDetails.getUser());
-  //    return ResponseEntity.ok(resList);
-  //  }
+    //  사용 예정 (랜덤 로직)
+    //  @GetMapping("/reward")
+    //  public ResponseEntity<List<ReadRewardResponseDTO>> getRewardList(
+    //      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    //
+    //    List<ReadRewardResponseDTO> resList = rewardService.getRewardList(userDetails.getUser());
+    //    return ResponseEntity.ok(resList);
+    //  }
 
-  @DeleteMapping("/reward/{account}/{reward_id}")
-  public ResponseEntity<DeleteRewardResponseDTO> deleteReward(
-      @AuthenticationPrincipal UserDetailsImpl userDetails,
-      @PathVariable Long reward_id,
-      @PathVariable String account) {
-    userInfoService.checkSameUser(account, userDetails.getUsername());
-    User user = userDetails.getUser();
-    DeleteRewardResponseDTO res = rewardService.deleteReward(user, reward_id);
-    return ResponseEntity.ok().body(res);
-  }
+    @DeleteMapping("/reward/{account}/{reward_id}")
+    public ResponseEntity<DeleteRewardResponseDTO> deleteReward(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long reward_id,
+            @PathVariable String account) {
+        userInfoService.checkSameUser(account, userDetails.getUsername());
+        User user = userDetails.getUser();
+        DeleteRewardResponseDTO res = rewardService.deleteReward(user, reward_id);
+        return ResponseEntity.ok().body(res);
+    }
 }

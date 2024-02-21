@@ -26,51 +26,51 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Comment extends TimeStamp {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  private String content;
+    @Column(nullable = false)
+    private String content;
 
-  private Long commentLikeCnt;
+    private Long commentLikeCnt;
 
-  @JoinColumn(name = "user_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private User user;
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
-  @JoinColumn(name = "product_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Product product;
+    @JoinColumn(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
-  @OneToMany(
-      mappedBy = "comment",
-      targetEntity = CommentLike.class,
-      cascade = CascadeType.REMOVE,
-      orphanRemoval = true)
-  List<CommentLike> commentLikeList = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "comment",
+            targetEntity = CommentLike.class,
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true)
+    List<CommentLike> commentLikeList = new ArrayList<>();
 
-  @Builder
-  private Comment(Long id, String content, Long commentLikeCnt, User user, Product product) {
-    this.id = id;
-    this.content = content;
-    this.commentLikeCnt = commentLikeCnt;
-    this.user = user;
-    this.product = product;
-  }
-
-  public void update(UpdateCommentRequestDTO req, Product product) {
-    if (!req.content().isEmpty()) {
-      this.content = req.content();
-      this.product = product;
+    @Builder
+    private Comment(Long id, String content, Long commentLikeCnt, User user, Product product) {
+        this.id = id;
+        this.content = content;
+        this.commentLikeCnt = commentLikeCnt;
+        this.user = user;
+        this.product = product;
     }
-  }
 
-  public void updateCommentLikeCnt(boolean clickCommentLike) {
-    if (clickCommentLike) {
-      this.commentLikeCnt++;
-      return;
+    public void update(UpdateCommentRequestDTO req, Product product) {
+        if (!req.content().isEmpty()) {
+            this.content = req.content();
+            this.product = product;
+        }
     }
-    this.commentLikeCnt--;
-  }
+
+    public void updateCommentLikeCnt(boolean clickCommentLike) {
+        if (clickCommentLike) {
+            this.commentLikeCnt++;
+            return;
+        }
+        this.commentLikeCnt--;
+    }
 }

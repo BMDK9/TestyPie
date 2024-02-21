@@ -19,31 +19,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentLike {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  private Boolean isCommentLiked;
+    @Column(nullable = false)
+    private Boolean isCommentLiked;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "comment_id")
-  private Comment comment;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
-  @Builder
-  private CommentLike(Long id, Boolean isCommentLiked, User user, Comment comment) {
-    this.id = id;
-    this.isCommentLiked = isCommentLiked;
-    this.user = user;
-    this.comment = comment;
-  }
+    @Builder
+    private CommentLike(Long id, Boolean isCommentLiked, User user, Comment comment) {
+        this.id = id;
+        this.isCommentLiked = isCommentLiked;
+        this.user = user;
+        this.comment = comment;
+    }
 
-  public Boolean clickCommentLike() {
-    this.isCommentLiked = !isCommentLiked;
-    return this.isCommentLiked;
-  }
+    public Boolean clickCommentLike() {
+        this.isCommentLiked = !isCommentLiked;
+        return this.isCommentLiked;
+    }
 }
