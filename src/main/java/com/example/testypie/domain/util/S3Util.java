@@ -68,7 +68,7 @@ public class S3Util {
 
             // 파일명을 UTF-8로 디코딩
             fileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
-            log.warn("업로드 파일 디코딩 완료 : " + filePath + fileName);
+            log.info("업로드 파일 디코딩 완료 : " + filePath + fileName);
             // 업로드할 파일의 메타데이터 생성
             ObjectMetadata metadata = setObjectMetadata(resizedImage);
             try {
