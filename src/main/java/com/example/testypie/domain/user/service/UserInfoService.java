@@ -4,6 +4,7 @@ import com.example.testypie.domain.feedback.entity.Feedback;
 import com.example.testypie.domain.feedback.service.FeedbackService;
 import com.example.testypie.domain.product.entity.Product;
 import com.example.testypie.domain.product.service.ProductService;
+import com.example.testypie.domain.reward.entity.Reward;
 import com.example.testypie.domain.user.dto.request.RatingStarRequestDTO;
 import com.example.testypie.domain.user.dto.request.UpdateProfileRequestDTO;
 import com.example.testypie.domain.user.dto.response.ParticipatedProductResponseDTO;
@@ -15,8 +16,9 @@ import com.example.testypie.domain.util.S3Util;
 import com.example.testypie.domain.util.S3Util.FilePath;
 import com.example.testypie.global.exception.ErrorCode;
 import com.example.testypie.global.exception.GlobalExceptionHandler;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,12 +37,10 @@ public class UserInfoService {
     private final ProductService productService;
     private final PasswordEncoder passwordEncoder;
     private final S3Util s3Util;
-    private final Random random = new Random();
 
     @Value("${default.image.address}")
     private String defaultProfileImageUrl;
 
-    @Transactional
     public UpdateProfileResponseDTO updateProfile(
             String account, UpdateProfileRequestDTO req, MultipartFile multipartfile, User user) {
 
@@ -137,35 +137,44 @@ public class UserInfoService {
     }
 
     // 랜덤로직
-    //  public List<User> drawUsers(Long productId) {
-    //
-    //    Product product = productService.checkProduct(productId);
-    //    List<Reward> rewardList = product.getRewardList();
-    //
-    //    if (rewardList == null || rewardList.isEmpty()) {
-    //      return List.of();
-    //    }
-    //
-    //    return getRandomUserList(productId, rewardList);
-    //  }
-    //  private List<User> getRandomUserList(Long productId, List<Reward> rewardList) {
-    //
-    //    List<User> userList = userRepository.findAllFeedbackUsersByProductId(productId);
-    //
-    //    for (Reward reward : rewardList) {
-    //      Integer rewardCnt = Math.toIntExact(reward.getItemSize());
-    //    }
-    //
-    //    int totalRewardSize =
-    //        rewardList.stream().mapToInt(reward -> Math.toIntExact(reward.getItemSize())).sum();
-    //    List<Integer> randomIndexes = getRandomIndexes(totalRewardSize, userList.size());
-    //
-    //    return randomIndexes.stream().distinct().map(userList::get).collect(Collectors.toList());
-    //  }
-    //
-    //  private List<Integer> getRandomIndexes(int totalSize, int maxSize) {
-    //    return random.ints(totalSize, 0, maxSize).boxed().toList();
-    //  }
+    public Map<String, Long> drawUsers(Long productId) {
+
+        Product product = productService.checkProduct(productId);
+        List<Reward> rewardList = product.getRewardList();
+
+        if (rewardList == null || rewardList.isEmpty()) {
+            throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_REWARD_NOT_FOUND);
+        }
+
+        return getRandomUserMap(productId, rewardList);
+    }
+
+    private Map<String, Long> getRandomUserMap(Long productId, List<Reward> rewardList) {
+
+        List<User> foundUserList = userRepository.findAllFeedbackUsersByProductId(productId);
+        Long[] foundUserLong = new Long[foundUserList.size()];
+        Boolean[] foundUserBoolean = new Boolean[foundUserList.size()];
+        for (int i = 0; i < foundUserList.size(); i++) {
+            foundUserLong[i] = foundUserList.get(i).getId();
+        }
+
+        Map<String, Long> RewardRandomPick = new HashMap<>();
+        int randomNum;
+        for (int i = 0; i < rewardList.size(); i++) {
+            String rewardName = rewardList.get(i).getRewardItem();
+
+            for (int j = 0; j < rewardList.get(i).getItemSize(); ) {
+                randomNum = (int) (Math.random() * foundUserLong.length);
+                if (!foundUserBoolean[randomNum]) {
+                    foundUserBoolean[randomNum] = true;
+                    RewardRandomPick.put(rewardName, foundUserLong[randomNum]);
+                    j++;
+                }
+            }
+        }
+
+        return RewardRandomPick;
+    }
 
     private void getUserValid(User profileUser, User user) {
         if (!profileUser.getId().equals(user.getId())) {
