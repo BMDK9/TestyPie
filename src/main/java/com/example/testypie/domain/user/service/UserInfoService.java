@@ -8,6 +8,7 @@ import com.example.testypie.domain.reward.entity.Reward;
 import com.example.testypie.domain.user.dto.request.RatingStarRequestDTO;
 import com.example.testypie.domain.user.dto.request.UpdateProfileRequestDTO;
 import com.example.testypie.domain.user.dto.response.ParticipatedProductResponseDTO;
+import com.example.testypie.domain.user.dto.response.RandomPickUserResponseDTO;
 import com.example.testypie.domain.user.dto.response.RegisteredProductResponseDTO;
 import com.example.testypie.domain.user.dto.response.UpdateProfileResponseDTO;
 import com.example.testypie.domain.user.entity.User;
@@ -137,7 +138,7 @@ public class UserInfoService {
     }
 
     // 랜덤로직
-    public Map<String, Long> drawUsers(Long productId) {
+    public RandomPickUserResponseDTO randomPickUsers(Long productId) {
 
         Product product = productService.checkProduct(productId);
         List<Reward> rewardList = product.getRewardList();
@@ -146,20 +147,21 @@ public class UserInfoService {
             throw new GlobalExceptionHandler.CustomException(ErrorCode.SELECT_REWARD_NOT_FOUND);
         }
 
-        return getRandomUserMap(productId, rewardList);
+        return new RandomPickUserResponseDTO(getRandomUserMap(productId, rewardList));
     }
 
-    private Map<String, Long> getRandomUserMap(Long productId, List<Reward> rewardList) {
+    private Map<Long, String> getRandomUserMap(Long productId, List<Reward> rewardList) {
 
         List<User> foundUserList = userRepository.findAllFeedbackUsersByProductId(productId);
-        Long[] foundUserLong = new Long[foundUserList.size()];
-        Boolean[] foundUserBoolean = new Boolean[foundUserList.size()];
+        long[] foundUserLong = new long[foundUserList.size()];
+        boolean[] foundUserBoolean = new boolean[foundUserList.size()];
         for (int i = 0; i < foundUserList.size(); i++) {
             foundUserLong[i] = foundUserList.get(i).getId();
         }
 
-        Map<String, Long> RewardRandomPick = new HashMap<>();
-        int randomNum;
+        Map<Long, String> rewardRandomPick = new HashMap<>();
+        int randomNum = 0;
+
         for (int i = 0; i < rewardList.size(); i++) {
             String rewardName = rewardList.get(i).getRewardItem();
 
@@ -167,13 +169,13 @@ public class UserInfoService {
                 randomNum = (int) (Math.random() * foundUserLong.length);
                 if (!foundUserBoolean[randomNum]) {
                     foundUserBoolean[randomNum] = true;
-                    RewardRandomPick.put(rewardName, foundUserLong[randomNum]);
+                    rewardRandomPick.put(foundUserLong[randomNum], rewardName);
                     j++;
                 }
             }
         }
 
-        return RewardRandomPick;
+        return rewardRandomPick;
     }
 
     private void getUserValid(User profileUser, User user) {

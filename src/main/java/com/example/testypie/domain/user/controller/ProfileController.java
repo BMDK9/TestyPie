@@ -5,6 +5,7 @@ import com.example.testypie.domain.user.dto.request.RatingStarRequestDTO;
 import com.example.testypie.domain.user.dto.request.UpdateProfileRequestDTO;
 import com.example.testypie.domain.user.dto.response.AverageRatingResponseDTO;
 import com.example.testypie.domain.user.dto.response.ParticipatedProductResponseDTO;
+import com.example.testypie.domain.user.dto.response.RandomPickUserResponseDTO;
 import com.example.testypie.domain.user.dto.response.ReadProfileResponseDTO;
 import com.example.testypie.domain.user.dto.response.RegisteredProductResponseDTO;
 import com.example.testypie.domain.user.dto.response.ResponseMessageDTO;
@@ -24,7 +25,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -119,19 +127,16 @@ public class ProfileController {
         return ResponseEntity.ok().body(new ResponseMessageDTO(message, HttpStatus.OK.value()));
     }
 
-    //  랜덤로직
-    //  @GetMapping("/{account}/lotto/{productId}")
-    //  public ResponseEntity<LottoResponseDTO> chooseRewardUser(
-    //      @PathVariable String account,
-    //      @PathVariable Long productId,
-    //      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-    //
-    //    userInfoService.checkSameUser(account, userDetails.getUsername());
-    //    List<User> userList = userInfoService.drawUsers(productId);
-    //
-    //    return ResponseEntity.ok()
-    //        .body(
-    //            new LottoResponseDTO(
-    //                userList.stream().map(User::getAccount).collect(Collectors.toList())));
-    //  }
+    // 랜덤로직
+    @GetMapping("/{account}/randomPick/{productId}")
+    public ResponseEntity<RandomPickUserResponseDTO> randomPickUser(
+            @PathVariable String account,
+            @PathVariable Long productId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        userInfoService.checkSameUser(account, userDetails.getUsername());
+        RandomPickUserResponseDTO res = userInfoService.randomPickUsers(productId);
+
+        return ResponseEntity.ok().body(res);
+    }
 }
